@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>ToDoList</title>
+        <meta name="description" content="Easy to do list using vue ">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./assets/styles.css">
+        <!-- Import vue js  -->
+        <script src="https://unpkg.com/vue@next"></script>
+    </head>
+
+    <header class = "header">
+        <h6>ToDoList</h6>
+    </header>
+
+    <body>
+        
+        <div id = "app" >
+        <div class = "listContainer">
+            <Task
+            class= "task"
+            v-for= "(task,index) in tasks" 
+            :index = "index"
+            :data = "task"
+            :key="task.id"
+            @task-clicked = "RemoveItem"
+            >
+        <Task>
+        </div>
+
+        <button class = "addButton clearfix"  v-on:click= "openForm"
+        >
+            <svg  class = "plusIcon" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        </button>
+
+        <div :class = "{opacityWindow:formActive}"></div>
+            
+        <!-- new form box -->
+
+        <task-form :show="formActive" @new-task-submitted= "addTask"></task-form>
+
+ 
+
+        </div>
+        <!-- Import app  -->
+        <script src="./main.js"></script>
+
+        <!--  Add Task component -->
+        <script src="./components/Task.js"></script>
+
+        <!--  Add TaskForm component -->
+        <script src="./components/TaskForm.js"></script>
+
+        <!-- Mount app -->
+        <script> 
+            const mountedApp = app.mount("#app")
+        </script>
+
+    </body>
+</html>
