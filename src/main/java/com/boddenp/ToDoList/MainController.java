@@ -1,5 +1,6 @@
 package com.boddenp.ToDoList;
 
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -14,12 +15,21 @@ public class MainController {
     // access to database
     @Autowired
     private ItemRepository itemRepository;
+    @Autowired
+    private FolderRepository folderRepository;
 
-    @PostMapping(path = "/todos")
-    public @ResponseBody Integer addItem(@RequestBody ToDoItem incompleteItem) {
+    @CrossOrigin(origins = "*")
+    @PostMapping(path = "/todos/{id}")
+    public @ResponseBody Integer addItem(@RequestBody ToDoItem incompleteItem, @PathVariable(value= "id")  Integer folderid ) throws NotFoundException {
         ToDoItem newItem = new ToDoItem();
         newItem.setDescription(incompleteItem.getDescription());
         newItem.setDone(false);
+        Optional<Folder> folder = folderRepository.findById(folderid);
+        if(folder.isPresent()){
+            newItem.setFolder(folder.get());
+        }else{
+            throw new NotFoundException("folder does not exist");
+        }
         itemRepository.save(newItem);
         return newItem.getId();
     }
@@ -31,6 +41,7 @@ public class MainController {
             if(susItem.isPresent()){
                 // modify the description
                 ToDoItem item = susItem.get();
+                repItem.setFolder(item.getFolder());
                 itemRepository.delete(item);
                 itemRepository.save(repItem);
                 return "saved";
@@ -69,9 +80,15 @@ public class MainController {
 //        }
 //    }
 
-    @GetMapping(path="/todos")
-    public @ResponseBody Iterable<ToDoItem> getAllUsers() {
+    @GetMapping(path="/todos/{id}")
+    public @ResponseBody Iterable<ToDoItem> getFolderTodos(@PathVariable(value = "id") Integer folderId) throws NotFoundException {
         // This returns a JSON or XML with the users
-        return itemRepository.findAll();
+        Optional<Folder> folder = folderRepository.findById(folderId) ;
+        if(folder.isPresent()){
+            return folder.get().getItems();
+        }else{
+            throw new NotFoundException("folder not found");
+        }
     }
+
 }

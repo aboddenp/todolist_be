@@ -1,4 +1,6 @@
 package com.boddenp.ToDoList;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -10,6 +12,19 @@ public class ToDoItem {
     private String description;
     private boolean done;
 
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name="folder_id", nullable=false)
+    private Folder folder;
+
+
+    public Folder getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Folder folder) {
+        this.folder = folder;
+    }
 
     public Integer getId() {
         return id;

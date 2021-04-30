@@ -1,6 +1,7 @@
 package com.boddenp.ToDoList;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "folder")
@@ -9,6 +10,17 @@ public class Folder {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    @OneToMany(mappedBy="folder" ,cascade = CascadeType.REMOVE)
+    private Set<ToDoItem> items;
+
+    public Set<ToDoItem> getItems() {
+        return items;
+    }
+
+    public void setItems(Set<ToDoItem> items) {
+        this.items = items;
+    }
 
 
     public Integer getId() {
